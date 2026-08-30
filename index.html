@@ -42,6 +42,7 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
         }
 
         @media (min-width: 500px) {
@@ -126,6 +127,65 @@
             color: var(--text-main);
         }
 
+        /* Menú Modal de Configuración */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            display: none;
+        }
+
+        .modal-card {
+            background: #202c33;
+            width: 85%;
+            max-width: 320px;
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .modal-card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-update {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: rgba(248, 113, 113, 0.15);
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+
+        .btn-close {
+            background: transparent;
+            color: var(--text-muted);
+        }
+
         /* Barra de Niveles */
         .levels-bar {
             background-color: #202c33;
@@ -160,15 +220,15 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             background-image: radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px);
             background-size: 20px 20px;
         }
 
         .message {
-            max-width: 82%;
-            padding: 8px 12px 10px 12px;
-            border-radius: 8px;
+            max-width: 85%;
+            padding: 10px 12px;
+            border-radius: 10px;
             font-size: 0.92rem;
             line-height: 1.4;
             position: relative;
@@ -192,16 +252,34 @@
             background-color: var(--bubble-ai);
             align-self: flex-start;
             border-top-left-radius: 0;
-            cursor: pointer;
         }
 
-        .message.ai::after {
-            content: '👆 tap for translation';
-            display: block;
-            font-size: 0.6rem;
+        .msg-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            align-items: center;
+        }
+
+        .action-chip {
+            background: rgba(255,255,255,0.05);
+            border: none;
             color: var(--text-muted);
-            margin-top: 4px;
-            opacity: 0.7;
+            font-size: 0.72rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .action-chip:hover {
+            background: rgba(255,255,255,0.12);
+            color: var(--text-main);
         }
 
         .translation-box {
@@ -214,7 +292,7 @@
             display: none;
         }
 
-        .message.ai.show-trans .translation-box {
+        .translation-box.show {
             display: block;
         }
 
@@ -223,33 +301,12 @@
             justify-content: flex-end;
             align-items: center;
             gap: 6px;
-            margin-top: 3px;
-            float: right;
-            clear: both;
+            margin-top: 4px;
         }
 
         .time-stamp {
             font-size: 0.6rem;
             color: var(--text-muted);
-        }
-
-        /* Botón de audio discreto en los mensajes */
-        .speak-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.75rem;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            opacity: 0.7;
-            transition: opacity 0.2s, color 0.2s;
-        }
-
-        .speak-btn:hover {
-            opacity: 1;
-            color: var(--text-main);
         }
 
         /* Área de Input estilo Chat */
@@ -325,9 +382,18 @@
                 </div>
             </div>
             <div class="header-actions">
-                <button class="icon-btn" onclick="solicitarApiKey()" title="Configurar API Key">🔑</button>
-                <button class="icon-btn" onclick="borrarApiKey()" title="Cambiar API Key">🗑️</button>
+                <button class="icon-btn" onclick="toggleSettingsModal()" title="Configuración">⚙️</button>
                 <button class="icon-btn" onclick="location.reload()" title="Reiniciar chat">↻</button>
+            </div>
+        </div>
+
+        <!-- Menú Modal de Configuración (Protegido contra borrados accidentales) -->
+        <div id="settingsModal" class="modal-overlay" onclick="closeModalOnOutside(event)">
+            <div class="modal-card">
+                <h3>Settings</h3>
+                <button class="modal-btn btn-update" onclick="solicitarApiKey()">🔑 Update API Key</button>
+                <button class="modal-btn btn-delete" onclick="borrarApiKey()">🗑️ Delete API Key</button>
+                <button class="modal-btn btn-close" onclick="toggleSettingsModal()">Close</button>
             </div>
         </div>
 
@@ -345,11 +411,14 @@
 
         <!-- Mensajes del Chat -->
         <div class="chat-messages" id="chatMessages">
-            <div class="message ai" onclick="toggleTranslation(event, this)">
-                Hey there! I'm Emma. Let's chat in English! Feel free to practice with me, and I'll help you out if you make any mistakes. 😊
+            <div class="message ai">
+                <div class="msg-text">Hey there! I'm Emma. Let's chat in English! Feel free to practice with me, and I'll help you out if you make any mistakes. 😊</div>
                 <div class="translation-box">¡Hola! Soy Emma. ¡Hablemos en inglés! Siéntete libre de practicar conmigo, y te ayudaré si cometes algún error. 😊</div>
+                <div class="msg-actions">
+                    <button class="action-chip" onclick="reproducirAudio('Hey there! IIM Emma. Let\\'s chat in English! Feel free to practice with me, and I\\'ll help you out if you make any mistakes.')">🔊 Listen</button>
+                    <button class="action-chip" onclick="toggleTranslation(this)">🌐 Translate</button>
+                </div>
                 <div class="msg-footer">
-                    <button class="speak-btn" onclick="reproducirAudio(event, this)" data-text="Hey there! I'm Emma. Let's chat in English! Feel free to practice with me, and I'll help you out if you make any mistakes." title="Escuchar pronunciación">🔊</button>
                     <span class="time-stamp">Just now</span>
                 </div>
             </div>
@@ -379,19 +448,33 @@
         }
         verificarApi();
 
+        function toggleSettingsModal() {
+            const modal = document.getElementById('settingsModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function closeModalOnOutside(event) {
+            if (event.target.id === 'settingsModal') {
+                toggleSettingsModal();
+            }
+        }
+
         function solicitarApiKey() {
             const key = prompt("Pega tu API Key de Google AI Studio:");
             if (key && key.trim() !== '') {
                 localStorage.setItem('gemini_api_key', key.trim());
                 verificarApi();
+                toggleSettingsModal();
                 alert("¡API Key guardada correctamente!");
             }
         }
 
         function borrarApiKey() {
-            if (confirm("¿Deseas cambiar o eliminar tu API Key?")) {
+            if (confirm("Are you sure you want to delete your API Key?")) {
                 localStorage.removeItem('gemini_api_key');
                 verificarApi();
+                toggleSettingsModal();
+                alert("API Key deleted.");
             }
         }
 
@@ -401,10 +484,11 @@
             elemento.classList.add('active');
         }
 
-        function toggleTranslation(event, element) {
-            // Evitar que se active si se hace clic en el botón de audio
-            if (event.target.classList.contains('speak-btn')) return;
-            element.classList.toggle('show-trans');
+        function toggleTranslation(btn) {
+            const msgCard = btn.closest('.message');
+            const transBox = msgCard.querySelector('.translation-box');
+            transBox.classList.toggle('show');
+            btn.innerText = transBox.classList.contains('show') ? '❌ Hide' : '🌐 Translate';
         }
 
         function checkSend(event) {
@@ -418,13 +502,10 @@
             return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
-        function reproducirAudio(event, btn) {
-            event.stopPropagation(); // Evitar que abra la traducción al tocar el audio
-            const textToSpeak = btn.getAttribute('data-text');
-            if (!textToSpeak) return;
-
+        function reproducirAudio(text) {
+            if (!text) return;
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
             utterance.rate = 0.9;
             window.speechSynthesis.speak(utterance);
@@ -436,8 +517,8 @@
             const apiKey = localStorage.getItem('gemini_api_key');
 
             if (!apiKey) {
-                alert("Por favor configura tu API Key pulsando el botón 🔑 arriba a la derecha.");
-                solicitarApiKey();
+                alert("Please configure your API Key in the settings menu (⚙️).");
+                toggleSettingsModal();
                 return;
             }
 
@@ -445,14 +526,16 @@
 
             const chatContainer = document.getElementById('chatMessages');
 
-            // 1. Mostrar mensaje del usuario con su botón de audio discreto
+            // 1. Mostrar mensaje del usuario
             const userMsgDiv = document.createElement('div');
             userMsgDiv.className = 'message me';
             const escapedUserText = escapeHtml(texto);
             userMsgDiv.innerHTML = `
-                ${escapedUserText}
+                <div class="msg-text">${escapedUserText}</div>
+                <div class="msg-actions" style="border-top: none; margin-top: 4px; padding-top: 0;">
+                    <button class="action-chip" onclick="reproducirAudio('${escapedUserText.replace(/'/g, "\\'")}')">🔊 Listen</button>
+                </div>
                 <div class="msg-footer">
-                    <button class="speak-btn" onclick="reproducirAudio(event, this)" data-text="${escapedUserText}" title="Escuchar pronunciación">🔊</button>
                     <span class="time-stamp">${getTimeString()}</span>
                 </div>
             `;
@@ -465,8 +548,10 @@
 
             chatHistory.push({ role: "user", parts: [{ text: texto }] });
 
+            // Instrucción estricta para forzar inglés y rechazar otros idiomas
             const systemInstruction = `You are Emma, a friendly foreign female friend. The user is practicing English with you. Their current English level is ${nivelActual}. 
-            Chat naturally like a close friend on WhatsApp. Keep your responses engaging, warm, and conversational. 
+            Chat naturally like a close friend on WhatsApp. Keep your responses engaging, warm, and conversational.
+            CRITICAL RULE: You must ONLY speak and reply in English. If the user writes in any other language or asks you to speak in another language, you must politely refuse in English and remind them to practice English with you.
             If the user makes a grammar or spelling mistake, gently and naturally correct them inside your conversational reply (e.g., "By the way, we usually say X instead of Y!"), but keep the flow friendly.
             You MUST respond strictly in a JSON format containing two keys:
             - "reply": Your response in English.
@@ -500,13 +585,17 @@
 
                     const aiMsgDiv = document.createElement('div');
                     aiMsgDiv.className = 'message ai';
-                    aiMsgDiv.setAttribute('onclick', 'toggleTranslation(event, this)');
                     const escapedAiText = escapeHtml(aiResponse.reply);
+                    const escapedTransText = escapeHtml(aiResponse.translation);
+                    
                     aiMsgDiv.innerHTML = `
-                        ${escapedAiText}
-                        <div class="translation-box">${escapeHtml(aiResponse.translation)}</div>
+                        <div class="msg-text">${escapedAiText}</div>
+                        <div class="translation-box">${escapedTransText}</div>
+                        <div class="msg-actions">
+                            <button class="action-chip" onclick="reproducirAudio('${escapedAiText.replace(/'/g, "\\'")}')">🔊 Listen</button>
+                            <button class="action-chip" onclick="toggleTranslation(this)">🌐 Translate</button>
+                        </div>
                         <div class="msg-footer">
-                            <button class="speak-btn" onclick="reproducirAudio(event, this)" data-text="${escapedAiText}" title="Escuchar pronunciación">🔊</button>
                             <span class="time-stamp">${getTimeString()}</span>
                         </div>
                     `;
