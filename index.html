@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Emma - English Practice</title>
+    <style>
+        :root {
+            --bg-color: #0b141a;
+            --chat-bg: #0fe2;
+            --header-bg: #202c33;
+            --text-main: #e9edef;
+            --text-muted: #8696a0;
+            --bubble-me: #005c4b;
+            --bubble-ai: #202c33;
+            --accent-color: #00a884;
+            --accent-hover: #008f72;
+            --warning-color: #fbbf24;
+            --danger-color: #f87171;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100%;
+            max-height: 850px;
+            background-color: #111b21;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 0;
+        }
+
+        @media (min-width: 500px) {
+            .app-container {
+                height: 90vh;
+                border-radius: 16px;
+                border: 1px solid var(--border-color);
+            }
+        }
+
+        /* Header estilo WhatsApp */
+        .chat-header {
+            background-color: var(--header-bg);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .friend-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #374248;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            position: relative;
+        }
+
+        .online-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border: 2px solid var(--header-bg);
+        }
+
+        .friend-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .friend-status {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+        }
+
+        /* Barra de Niveles */
+        .levels-bar {
+            background-color: #202c33;
+            padding: 8px 15px;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .level-btn {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            border: none;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .level-btn.active {
+            background-color: var(--accent-color);
+            color: #fff;
+        }
+
+        /* Contenedor de Mensajes */
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            line-height: 1.4;
+            position: relative;
+            word-wrap: break-word;
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.3);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.me {
+            background-color: var(--bubble-me);
+            align-self: flex-end;
+            border-top-right-radius: 0;
+        }
+
+        .message.ai {
+            background-color: var(--bubble-ai);
+            align-self: flex-start;
+            border-top-left-radius: 0;
+            cursor: pointer;
+        }
+
+        .message.ai::after {
+            content: '👆 tap for translation';
+            display: block;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+
+        .translation-box {
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.85rem;
+            color: #7ee787;
+            font-style: italic;
+            display: none;
+        }
+
+        .message.ai.show-trans .translation-box {
+            display: block;
+        }
+
+        .time-stamp {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            float: right;
+            margin-left: 8px;
+            margin-top: 4px;
+            vertical-align: bottom;
+        }
+
+        /* Área de Input estilo Chat */
+        .chat-input-area {
+            background-color: var(--header-bg);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input {
+            flex: 1;
+            background-color: #2a3942;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* Notificación emergente de API */
+        .api-banner {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--warning-color);
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="friend-info">
+                <div class="avatar">
+                    👩🏼
+                    <div class="online-dot"></div>
+                </div>
+                <div>
+                    <h2 class="friend-name">Emma 🇺🇸</h2>
+                    <p class="friend-status" id="statusText">online</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="solicitarApiKey()" title="Configurar API Key">🔑</button>
+                <button class="icon-btn" onclick="borrarApiKey()" title="Cambiar API Key">🗑️</button>
+                <button class="icon-btn" onclick="location.reload()" title="Reiniciar chat">↻</button>
+            </div>
+        </div>
+
+        <!-- Banner por si falta la API -->
+        <div id="apiBanner" class="api-banner" onclick="solicitarApiKey()">
+            ⚠️ Falta configurar tu API Key. Haz clic aquí para agregarla.
+        </div>
+
+        <!-- Selector de Nivel -->
+        <div class="levels-bar">
+            <button class="level-btn active" onclick="cambiarNivel('BASIC', this)">BASIC</button>
+            <button class="level-btn" onclick="cambiarNivel('INTERMEDIATE', this)">INTERMEDIATE</button>
+            <button class="level-btn" onclick="cambiarNivel('ADVANCED', this)">ADVANCED</button>
+        </div>
+
+        <!-- Mensajes del Chat -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai" onclick="toggleTranslation(this)">
+                Hey there! I'm Emma. Let's chat in English! Feel free to practice with me, and I'll help you out if you make any mistakes. 😊
+                <div class="translation-box">¡Hola! Soy Emma. ¡Hablemos en inglés! Siéntete libre de practicar conmigo, y te ayudaré si cometes algún error. 😊</div>
+                <span class="time-stamp">Just now</span>
+            </div>
+        </div>
+
+        <!-- Input de Mensaje -->
+        <div class="chat-input-area">
+            <input type="text" id="userInput" class="chat-input" placeholder="Type a message in English..." onkeydown="checkSend(event)">
+            <button class="send-btn" onclick="enviarMensaje()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        let nivelActual = 'BASIC';
+        let chatHistory = []; // Memoria de la conversación para la IA
+
+        // Verificar API Key al cargar
+        function verificarApi() {
+            const banner = document.getElementById('apiBanner');
+            if (!localStorage.getItem('gemini_api_key')) {
+                banner.style.display = 'block';
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+        verificarApi();
+
+        function solicitarApiKey() {
+            const key = prompt("Pega tu API Key de Google AI Studio:");
+            if (key && key.trim() !== '') {
+                localStorage.setItem('gemini_api_key', key.trim());
+                verificarApi();
+                alert("¡API Key guardada correctamente!");
+            }
+        }
+
+        function borrarApiKey() {
+            if (confirm("¿Deseas cambiar o eliminar tu API Key?")) {
+                localStorage.removeItem('gemini_api_key');
+                verificarApi();
+            }
+        }
+
+        function cambiarNivel(nivel, elemento) {
+            nivelActual = nivel;
+            document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+            elemento.classList.add('active');
+        }
+
+        function toggleTranslation(element) {
+            element.classList.toggle('show-trans');
+        }
+
+        function checkSend(event) {
+            if (event.key === 'Enter') {
+                enviarMensaje();
+            }
+        }
+
+        function getTimeString() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function enviarMensaje() {
+            const input = document.getElementById('userInput');
+            const texto = input.value.trim();
+            const apiKey = localStorage.getItem('gemini_api_key');
+
+            if (!apiKey) {
+                alert("Por favor configura tu API Key pulsando el botón 🔑 arriba a la derecha.");
+                solicitarApiKey();
+                return;
+            }
+
+            if (!texto) return;
+
+            const chatContainer = document.getElementById('chatMessages');
+
+            // 1. Mostrar mensaje del usuario
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'message me';
+            userMsgDiv.innerHTML = `${escapeHtml(texto)} <span class="time-stamp">${getTimeString()}</span>`;
+            chatContainer.appendChild(userMsgDiv);
+
+            input.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Cambiar estado a "writing..."
+            document.getElementById('statusText').innerText = 'typing...';
+
+            // Guardar en el historial de chat
+            chatHistory.push({ role: "user", parts: [{ text: texto }] });
+
+            // Prompt de sistema para Emma según el nivel
+            const systemInstruction = `You are Emma, a friendly foreign female friend. The user is practicing English with you. Their current English level is ${nivelActual}. 
+            Chat naturally like a close friend on WhatsApp. Keep your responses engaging, warm, and conversational. 
+            If the user makes a grammar or spelling mistake, gently and naturally correct them inside your conversational reply (e.g., "By the way, we usually say X instead of Y!"), but keep the flow friendly.
+            You MUST respond strictly in a JSON format containing two keys:
+            - "reply": Your response in English.
+            - "translation": The Spanish translation of your response.
+            Do not include any markdown or text outside the JSON object.`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        system_instruction: { parts: [{ text: systemInstruction }] },
+                        contents: chatHistory,
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error?.message || "Error de conexión con la IA");
+                }
+
+                const data = await response.json();
+
+                if (data.candidates && data.candidates[0].content) {
+                    let rawText = data.candidates[0].content.parts[0].text;
+                    rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                    const aiResponse = JSON.parse(rawText);
+
+                    // Guardar respuesta de la IA en el historial
+                    chatHistory.push({ role: "model", parts: [{ text: aiResponse.reply }] });
+
+                    // Mostrar mensaje de Emma
+                    const aiMsgDiv = document.createElement('div');
+                    aiMsgDiv.className = 'message ai';
+                    aiMsgDiv.setAttribute('onclick', 'toggleTranslation(this)');
+                    aiMsgDiv.innerHTML = `
+                        ${escapeHtml(aiResponse.reply)}
+                        <div class="translation-box">${escapeHtml(aiResponse.translation)}</div>
+                        <span class="time-stamp">${getTimeString()}</span>
+                    `;
+                    chatContainer.appendChild(aiMsgDiv);
+                } else {
+                    throw new Error("Respuesta inválida de la IA.");
+                }
+
+            } catch (error) {
+                console.error(error);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'message ai';
+                errorDiv.style.color = 'var(--danger-color)';
+                errorDiv.innerHTML = `Oops! Error: ${escapeHtml(error.message)}`;
+                chatContainer.appendChild(errorDiv);
+            } finally {
+                document.getElementById('statusText').innerText = 'online';
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+</html>
