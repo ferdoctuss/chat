@@ -2,12 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chat with Emma - English Practice</title>
     <style>
         :root {
             --bg-color: #0b141a;
-            --chat-bg: #0fe2;
             --header-bg: #202c33;
             --text-main: #e9edef;
             --text-muted: #8696a0;
@@ -31,6 +30,7 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            touch-action: manipulation;
         }
 
         .app-container {
@@ -42,7 +42,6 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border-radius: 0;
         }
 
         @media (min-width: 500px) {
@@ -107,7 +106,7 @@
 
         .header-actions {
             display: flex;
-            gap: 8px;
+            gap: 4px;
             align-items: center;
         }
 
@@ -167,8 +166,8 @@
         }
 
         .message {
-            max-width: 80%;
-            padding: 10px 14px;
+            max-width: 82%;
+            padding: 8px 12px 10px 12px;
             border-radius: 8px;
             font-size: 0.92rem;
             line-height: 1.4;
@@ -199,7 +198,7 @@
         .message.ai::after {
             content: '👆 tap for translation';
             display: block;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--text-muted);
             margin-top: 4px;
             opacity: 0.7;
@@ -219,13 +218,38 @@
             display: block;
         }
 
-        .time-stamp {
-            font-size: 0.65rem;
-            color: var(--text-muted);
+        .msg-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 6px;
+            margin-top: 3px;
             float: right;
-            margin-left: 8px;
-            margin-top: 4px;
-            vertical-align: bottom;
+            clear: both;
+        }
+
+        .time-stamp {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+        }
+
+        /* Botón de audio discreto en los mensajes */
+        .speak-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            opacity: 0.7;
+            transition: opacity 0.2s, color 0.2s;
+        }
+
+        .speak-btn:hover {
+            opacity: 1;
+            color: var(--text-main);
         }
 
         /* Área de Input estilo Chat */
@@ -272,7 +296,6 @@
             background-color: var(--accent-hover);
         }
 
-        /* Notificación emergente de API */
         .api-banner {
             background: rgba(251, 191, 36, 0.15);
             color: var(--warning-color);
@@ -297,7 +320,7 @@
                     <div class="online-dot"></div>
                 </div>
                 <div>
-                    <h2 class="friend-name">Emma 🇺🇸</h2>
+                    <h2 class="friend-name">Emma</h2>
                     <p class="friend-status" id="statusText">online</p>
                 </div>
             </div>
@@ -322,10 +345,13 @@
 
         <!-- Mensajes del Chat -->
         <div class="chat-messages" id="chatMessages">
-            <div class="message ai" onclick="toggleTranslation(this)">
+            <div class="message ai" onclick="toggleTranslation(event, this)">
                 Hey there! I'm Emma. Let's chat in English! Feel free to practice with me, and I'll help you out if you make any mistakes. 😊
                 <div class="translation-box">¡Hola! Soy Emma. ¡Hablemos en inglés! Siéntete libre de practicar conmigo, y te ayudaré si cometes algún error. 😊</div>
-                <span class="time-stamp">Just now</span>
+                <div class="msg-footer">
+                    <button class="speak-btn" onclick="reproducirAudio(event, this)" data-text="Hey there! I'm Emma. Let's chat in English! Feel free to practice with me, and I'll help you out if you make any mistakes." title="Escuchar pronunciación">🔊</button>
+                    <span class="time-stamp">Just now</span>
+                </div>
             </div>
         </div>
 
@@ -341,9 +367,8 @@
 
     <script>
         let nivelActual = 'BASIC';
-        let chatHistory = []; // Memoria de la conversación para la IA
+        let chatHistory = [];
 
-        // Verificar API Key al cargar
         function verificarApi() {
             const banner = document.getElementById('apiBanner');
             if (!localStorage.getItem('gemini_api_key')) {
@@ -376,7 +401,9 @@
             elemento.classList.add('active');
         }
 
-        function toggleTranslation(element) {
+        function toggleTranslation(event, element) {
+            // Evitar que se active si se hace clic en el botón de audio
+            if (event.target.classList.contains('speak-btn')) return;
             element.classList.toggle('show-trans');
         }
 
@@ -389,6 +416,18 @@
         function getTimeString() {
             const now = new Date();
             return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function reproducirAudio(event, btn) {
+            event.stopPropagation(); // Evitar que abra la traducción al tocar el audio
+            const textToSpeak = btn.getAttribute('data-text');
+            if (!textToSpeak) return;
+
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
         }
 
         async function enviarMensaje() {
@@ -406,22 +445,26 @@
 
             const chatContainer = document.getElementById('chatMessages');
 
-            // 1. Mostrar mensaje del usuario
+            // 1. Mostrar mensaje del usuario con su botón de audio discreto
             const userMsgDiv = document.createElement('div');
             userMsgDiv.className = 'message me';
-            userMsgDiv.innerHTML = `${escapeHtml(texto)} <span class="time-stamp">${getTimeString()}</span>`;
+            const escapedUserText = escapeHtml(texto);
+            userMsgDiv.innerHTML = `
+                ${escapedUserText}
+                <div class="msg-footer">
+                    <button class="speak-btn" onclick="reproducirAudio(event, this)" data-text="${escapedUserText}" title="Escuchar pronunciación">🔊</button>
+                    <span class="time-stamp">${getTimeString()}</span>
+                </div>
+            `;
             chatContainer.appendChild(userMsgDiv);
 
             input.value = '';
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            // Cambiar estado a "writing..."
             document.getElementById('statusText').innerText = 'typing...';
 
-            // Guardar en el historial de chat
             chatHistory.push({ role: "user", parts: [{ text: texto }] });
 
-            // Prompt de sistema para Emma según el nivel
             const systemInstruction = `You are Emma, a friendly foreign female friend. The user is practicing English with you. Their current English level is ${nivelActual}. 
             Chat naturally like a close friend on WhatsApp. Keep your responses engaging, warm, and conversational. 
             If the user makes a grammar or spelling mistake, gently and naturally correct them inside your conversational reply (e.g., "By the way, we usually say X instead of Y!"), but keep the flow friendly.
@@ -453,17 +496,19 @@
                     rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
                     const aiResponse = JSON.parse(rawText);
 
-                    // Guardar respuesta de la IA en el historial
                     chatHistory.push({ role: "model", parts: [{ text: aiResponse.reply }] });
 
-                    // Mostrar mensaje de Emma
                     const aiMsgDiv = document.createElement('div');
                     aiMsgDiv.className = 'message ai';
-                    aiMsgDiv.setAttribute('onclick', 'toggleTranslation(this)');
+                    aiMsgDiv.setAttribute('onclick', 'toggleTranslation(event, this)');
+                    const escapedAiText = escapeHtml(aiResponse.reply);
                     aiMsgDiv.innerHTML = `
-                        ${escapeHtml(aiResponse.reply)}
+                        ${escapedAiText}
                         <div class="translation-box">${escapeHtml(aiResponse.translation)}</div>
-                        <span class="time-stamp">${getTimeString()}</span>
+                        <div class="msg-footer">
+                            <button class="speak-btn" onclick="reproducirAudio(event, this)" data-text="${escapedAiText}" title="Escuchar pronunciación">🔊</button>
+                            <span class="time-stamp">${getTimeString()}</span>
+                        </div>
                     `;
                     chatContainer.appendChild(aiMsgDiv);
                 } else {
