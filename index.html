@@ -342,7 +342,7 @@
             font-size: 0.82rem;
             color: #a7f3d0;
             display: none;
-            line-height: 1.35;
+            line-height: 1.45;
             white-space: pre-line;
         }
 
@@ -706,7 +706,6 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // Petición con fallback automático en Groq
         async function fetchWithGroqFallback(apiKey, bodyPayload) {
             const modelsToTry = [
                 'llama-3.3-70b-versatile',
@@ -782,14 +781,16 @@
 
             const systemInstruction = `You are Emma, a friendly native English speaker and supportive language partner. The user's English level is ${nivelActual}.
 Chat naturally like a friend on WhatsApp. Keep your responses short, natural, warm, and engaging.
-CRITICAL RULE: You must ONLY reply in English in the "reply" field.
-If the user makes a grammar, spelling, or phrasing mistake, you must gently correct them inside your response or explain it clearly.
-In the "translation" field, provide the Spanish translation of your English reply, AND if there were errors, include a clear explanation in Spanish mentioning the exact English terms (such as articles like "the", contractions like "I'm", prepositions, etc.) just like a professional bilingual tutor. Format the explanation cleanly with line breaks.
+CRITICAL RULE: The "reply" field MUST be written 100% in English. Keep your conversational response clean without mixing long Spanish paragraphs inside the chat bubble.
+If the user makes a grammar, spelling, or phrasing mistake, you must put the detailed explanation and corrections inside the "translation" field.
+The "translation" field must contain:
+1. La traducción al español de tu respuesta en inglés.
+2. Si el usuario cometió un error, agrega debajo una explicación clara y detallada en español usando los términos técnicos en inglés (por ejemplo: artículos como "the", verbos auxiliary, contracciones como "I'm", preposiciones, etc.), mostrando el ejemplo corregido tal como lo solicitó el usuario.
 
 You MUST reply strictly in valid JSON format:
 {
-  "reply": "Your conversational English response including gentle corrections if needed",
-  "translation": "Traducción al español de tu respuesta.\\n\\n(Explicación detallada de la corrección en español usando los términos en inglés)."
+  "reply": "Your conversational English response",
+  "translation": "Traducción al español de tu respuesta.\\n\\n(Explicación detallada de la corrección en español, usando términos en inglés y el ejemplo corregido)."
 }`;
 
             try {
