@@ -343,6 +343,7 @@
             color: #a7f3d0;
             display: none;
             line-height: 1.35;
+            white-space: pre-line;
         }
 
         .translation-box.show {
@@ -705,7 +706,7 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // Petición con fallback actualizado a modelos vigentes de Groq
+        // Petición con fallback automático en Groq
         async function fetchWithGroqFallback(apiKey, bodyPayload) {
             const modelsToTry = [
                 'llama-3.3-70b-versatile',
@@ -781,12 +782,14 @@
 
             const systemInstruction = `You are Emma, a friendly native English speaker and supportive language partner. The user's English level is ${nivelActual}.
 Chat naturally like a friend on WhatsApp. Keep your responses short, natural, warm, and engaging.
-CRITICAL RULE: You must ONLY reply in English.
-If the user makes a grammar or spelling mistake, gently point it out in a friendly conversational way within your reply before continuing the chat.
+CRITICAL RULE: You must ONLY reply in English in the "reply" field.
+If the user makes a grammar, spelling, or phrasing mistake, you must gently correct them inside your response or explain it clearly.
+In the "translation" field, provide the Spanish translation of your English reply, AND if there were errors, include a clear explanation in Spanish mentioning the exact English terms (such as articles like "the", contractions like "I'm", prepositions, etc.) just like a professional bilingual tutor. Format the explanation cleanly with line breaks.
+
 You MUST reply strictly in valid JSON format:
 {
-  "reply": "Your conversational English response",
-  "translation": "Spanish translation of your response"
+  "reply": "Your conversational English response including gentle corrections if needed",
+  "translation": "Traducción al español de tu respuesta.\\n\\n(Explicación detallada de la corrección en español usando los términos en inglés)."
 }`;
 
             try {
