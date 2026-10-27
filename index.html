@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -15,13 +15,13 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        :root {
+        /* iMessage Theme Variables (Dark by default) */
+        :root[data-theme="dark"] {
             --bg-body: #000000;
             --surface-card: #000000;
             --surface-inner: #1c1c1e;
             --surface-hover: #2c2c2e;
             
-            /* iMessage Theme Colors (Dark Mode) */
             --primary: #0a84ff;
             --primary-gradient: #0a84ff;
             --accent-glow: rgba(10, 132, 255, 0.3);
@@ -31,11 +31,52 @@
             --text-main: #f5f5f7;
             --text-muted: #8e8e93;
             --border-glass: #38383a;
-            --border-glow: #0a84ff;
+            
+            --header-bg: rgba(0, 0, 0, 0.85);
+            --header-border: #2c2c2e;
+            --input-wrapper-bg: #1c1c1e;
+            --input-border: #38383a;
+            --modal-bg: #1c1c1e;
+            --modal-border: #38383a;
+            --btn-close-bg: #2c2c2e;
+            --levels-bar-bg: #1c1c1e;
+            --level-btn-active: #636366;
             
             --success: #30d158;
             --warning: #ff9f0a;
             --danger: #ff453a;
+        }
+
+        /* iMessage Theme Variables (Light Mode) */
+        :root[data-theme="light"] {
+            --bg-body: #f2f2f7;
+            --surface-card: #ffffff;
+            --surface-inner: #f2f2f7;
+            --surface-hover: #e5e5ea;
+            
+            --primary: #007aff;
+            --primary-gradient: #007aff;
+            --accent-glow: rgba(0, 122, 255, 0.3);
+            
+            --bubble-me: #007aff;
+            --bubble-ai: #e9e9eb;
+            --text-main: #000000;
+            --text-muted: #8e8e93;
+            --border-glass: #c6c6c8;
+            
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --header-border: #c6c6c8;
+            --input-wrapper-bg: #ffffff;
+            --input-border: #c6c6c8;
+            --modal-bg: #ffffff;
+            --modal-border: #c6c6c8;
+            --btn-close-bg: #e5e5ea;
+            --levels-bar-bg: #e5e5ea;
+            --level-btn-active: #ffffff;
+            
+            --success: #34c759;
+            --warning: #ff9500;
+            --danger: #ff3b30;
         }
 
         * {
@@ -56,6 +97,7 @@
             min-height: 100vh;
             min-height: 100dvh;
             overflow: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .app-container {
@@ -68,29 +110,31 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
             overflow: hidden;
+            transition: background-color 0.3s ease;
         }
 
         @media (min-width: 520px) {
             .app-container {
                 height: 92vh;
                 border-radius: 40px;
-                border: 10px solid #1c1c1e;
+                border: 10px solid var(--border-glass);
             }
         }
 
         /* Header (iOS Navigation Bar Style) */
         .chat-header {
-            background: rgba(0, 0, 0, 0.85);
+            background: var(--header-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 0.5px solid #2c2c2e;
+            border-bottom: 0.5px solid var(--header-border);
             z-index: 20;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .friend-info {
@@ -112,7 +156,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: #2c2c2e;
+            background: var(--surface-inner);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -123,10 +167,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .online-dot {
-            display: none; /* iOS doesn't show online status dots in headers */
         }
 
         .friend-meta h2 {
@@ -158,13 +198,6 @@
         .header-actions {
             display: flex;
             gap: 8px;
-            position: absolute;
-            right: 16px;
-        }
-
-        .header-actions:first-child {
-            left: 16px;
-            right: auto;
         }
 
         .icon-btn {
@@ -185,20 +218,22 @@
             opacity: 0.7;
         }
 
-        /* Selector de Nivel (iMessage Segmented Control) */
+        /* Selector de Nivel */
         .levels-container {
             padding: 8px 16px;
-            background: rgba(0, 0, 0, 0.85);
-            border-bottom: 0.5px solid #2c2c2e;
+            background: var(--header-bg);
+            border-bottom: 0.5px solid var(--header-border);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .levels-bar {
-            background: #1c1c1e;
+            background: var(--levels-bar-bg);
             padding: 2px;
             border-radius: 9px;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 2px;
+            transition: background 0.3s ease;
         }
 
         .level-btn {
@@ -214,12 +249,16 @@
         }
 
         .level-btn.active {
-            background: #636366;
-            color: #ffffff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            background: var(--level-btn-active);
+            color: var(--text-main);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* Mensajes (iMessage Bubbles Style) */
+        :root[data-theme="light"] .level-btn.active {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        /* Mensajes */
         .chat-messages {
             flex: 1;
             padding: 16px;
@@ -229,10 +268,11 @@
             gap: 12px;
             scroll-behavior: smooth;
             background-color: var(--bg-body);
+            transition: background-color 0.3s ease;
         }
 
         .chat-messages::-webkit-scrollbar {
-            width: 0px; /* Hide scrollbar like iOS */
+            width: 0px;
         }
 
         .message {
@@ -272,13 +312,13 @@
             gap: 6px;
             margin-top: 8px;
             padding-top: 6px;
-            border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+            border-top: 0.5px solid rgba(128, 128, 128, 0.2);
         }
 
         .action-chip {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(128, 128, 128, 0.15);
             border: none;
-            color: rgba(255, 255, 255, 0.85);
+            color: var(--text-main);
             font-size: 0.7rem;
             font-weight: 500;
             padding: 3px 8px;
@@ -291,7 +331,7 @@
         }
 
         .action-chip:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(128, 128, 128, 0.25);
         }
 
         .message.me .action-chip {
@@ -306,7 +346,7 @@
             border-left: 2px solid var(--success);
             border-radius: 4px 8px 8px 4px;
             font-size: 0.8rem;
-            color: #8ae9a8;
+            color: var(--success);
             display: none;
             line-height: 1.35;
             white-space: pre-line;
@@ -327,26 +367,28 @@
             color: var(--text-muted);
         }
 
-        /* Input Bar (iMessage Style Bottom Bar) */
+        /* Input Bar */
         .chat-input-area {
-            background: rgba(0, 0, 0, 0.85);
+            background: var(--header-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             padding: 10px 16px;
             display: flex;
             align-items: center;
             gap: 8px;
-            border-top: 0.5px solid #2c2c2e;
+            border-top: 0.5px solid var(--header-border);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .input-wrapper {
             flex: 1;
-            background: #1c1c1e;
-            border: 0.5px solid #38383a;
+            background: var(--input-wrapper-bg);
+            border: 0.5px solid var(--input-border);
             border-radius: 20px;
             padding: 2px 14px;
             display: flex;
             align-items: center;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .input-wrapper:focus-within {
@@ -364,7 +406,7 @@
         }
 
         .chat-input::placeholder {
-            color: #636366;
+            color: var(--text-muted);
         }
 
         .send-btn {
@@ -400,7 +442,7 @@
             cursor: pointer;
         }
 
-        /* Settings Modal (iOS Action Sheet style) */
+        /* Settings Modal */
         .modal-overlay {
             position: absolute;
             inset: 0;
@@ -415,14 +457,15 @@
         }
 
         .modal-card {
-            background: #1c1c1e;
+            background: var(--modal-bg);
             width: 100%;
             max-width: 460px;
             padding: 20px;
             border-radius: 24px;
-            border: 0.5px solid #38383a;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            border: 0.5px solid var(--modal-border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             animation: slideUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         @keyframes slideUpModal {
@@ -455,6 +498,12 @@
             font-family: inherit;
         }
 
+        .btn-theme {
+            background: var(--surface-inner);
+            color: var(--text-main);
+            border: 0.5px solid var(--modal-border);
+        }
+
         .btn-update {
             background: var(--primary);
             color: #ffffff;
@@ -466,7 +515,7 @@
         }
 
         .btn-close {
-            background: #2c2c2e;
+            background: var(--btn-close-bg);
             color: var(--text-main);
             margin-top: 8px;
         }
@@ -482,7 +531,7 @@
         
         <!-- Header -->
         <header class="chat-header">
-            <button class="icon-btn" style="position: static;" onclick="location.reload()" title="Reiniciar chat">
+            <button class="icon-btn" onclick="location.reload()" title="Reiniciar chat">
                 <i data-lucide="rotate-cw" style="width: 18px; height: 18px;"></i>
             </button>
             <div class="friend-info">
@@ -500,7 +549,7 @@
                     <p class="friend-status" id="statusText">iMessage</p>
                 </div>
             </div>
-            <div class="header-actions" style="position: static;">
+            <div class="header-actions">
                 <button class="icon-btn" onclick="toggleSettingsModal()" title="Configuración">
                     <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
                 </button>
@@ -558,6 +607,9 @@
         <div id="settingsModal" class="modal-overlay" onclick="closeModalOnOutside(event)">
             <div class="modal-card">
                 <h3>Settings</h3>
+                <button class="modal-btn btn-theme" onclick="alternarTema()">
+                    <i id="themeIcon" data-lucide="sun" style="width: 16px; height: 16px;"></i> <span id="themeText">Cambiar a Modo Claro</span>
+                </button>
                 <button class="modal-btn btn-update" onclick="solicitarApiKey()">
                     <i data-lucide="key" style="width: 16px; height: 16px;"></i> Update Groq API Key
                 </button>
@@ -579,7 +631,39 @@
                 lucide.createIcons();
             }
         }
-        document.addEventListener('DOMContentLoaded', renderIcons);
+        document.addEventListener('DOMContentLoaded', () => {
+            inicializarTema();
+            renderIcons();
+        });
+
+        // Lógica de Modo Claro / Oscuro
+        function inicializarTema() {
+            const savedTheme = localStorage.getItem('emma_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            actualizarBotonTema(savedTheme);
+        }
+
+        function alternarTema() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('emma_theme', newTheme);
+            actualizarBotonTema(newTheme);
+            renderIcons();
+        }
+
+        function actualizarBotonTema(theme) {
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            if (theme === 'light') {
+                icon.setAttribute('data-lucide', 'moon');
+                text.textContent = 'Cambiar a Modo Oscuro';
+            } else {
+                icon.setAttribute('data-lucide', 'sun');
+                text.textContent = 'Cambiar a Modo Claro';
+            }
+            renderIcons();
+        }
 
         function verificarApi() {
             const banner = document.getElementById('apiBanner');
