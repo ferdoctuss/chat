@@ -11,29 +11,31 @@
     <!-- Google Fonts & Lucide Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         :root {
-            --bg-body: #090d16;
-            --surface-card: rgba(18, 24, 38, 0.75);
-            --surface-inner: rgba(255, 255, 255, 0.03);
-            --surface-hover: rgba(255, 255, 255, 0.07);
-            --primary: #6366f1;
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            --accent-glow: rgba(99, 102, 241, 0.25);
+            --bg-body: #000000;
+            --surface-card: #000000;
+            --surface-inner: #1c1c1e;
+            --surface-hover: #2c2c2e;
             
-            --bubble-me: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-            --bubble-ai: rgba(30, 41, 59, 0.6);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(99, 102, 241, 0.35);
+            /* iMessage Theme Colors (Dark Mode) */
+            --primary: #0a84ff;
+            --primary-gradient: #0a84ff;
+            --accent-glow: rgba(10, 132, 255, 0.3);
             
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
+            --bubble-me: #0a84ff;
+            --bubble-ai: #262629;
+            --text-main: #f5f5f7;
+            --text-muted: #8e8e93;
+            --border-glass: #38383a;
+            --border-glow: #0a84ff;
+            
+            --success: #30d158;
+            --warning: #ff9f0a;
+            --danger: #ff453a;
         }
 
         * {
@@ -43,7 +45,7 @@
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
             margin: 0;
@@ -54,9 +56,6 @@
             min-height: 100vh;
             min-height: 100dvh;
             overflow: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 40%);
         }
 
         .app-container {
@@ -66,57 +65,58 @@
             height: 100dvh;
             max-height: 900px;
             background: var(--surface-card);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-glass);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
             overflow: hidden;
         }
 
         @media (min-width: 520px) {
             .app-container {
                 height: 92vh;
-                border-radius: 28px;
+                border-radius: 40px;
+                border: 10px solid #1c1c1e;
             }
         }
 
-        /* Header */
+        /* Header (iOS Navigation Bar Style) */
         .chat-header {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(16px);
-            padding: 14px 20px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--border-glass);
+            border-bottom: 0.5px solid #2c2c2e;
             z-index: 20;
         }
 
         .friend-info {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 14px;
+            flex: 1;
+            text-align: center;
         }
 
         .avatar-wrap {
             position: relative;
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 4px;
         }
 
         .avatar {
             width: 100%;
             height: 100%;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 50%;
+            background: #2c2c2e;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border: 1px solid var(--border-glass);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .avatar img {
@@ -126,153 +126,130 @@
         }
 
         .online-dot {
-            width: 11px;
-            height: 11px;
-            background-color: var(--success);
-            border-radius: 50%;
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            border: 2px solid #0f172a;
-            box-shadow: 0 0 8px var(--success);
+            display: none; /* iOS doesn't show online status dots in headers */
         }
 
         .friend-meta h2 {
-            font-size: 1rem;
-            font-weight: 700;
+            font-size: 0.95rem;
+            font-weight: 600;
             margin: 0;
             letter-spacing: -0.01em;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            gap: 4px;
+            color: var(--text-main);
         }
 
         .badge-verified {
             display: inline-flex;
-            color: #60a5fa;
-            width: 14px;
-            height: 14px;
+            color: var(--primary);
+            width: 12px;
+            height: 12px;
         }
 
         .friend-status {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
-            margin: 2px 0 0;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .typing-dot {
-            display: inline-block;
-            width: 4px;
-            height: 4px;
-            background: var(--primary);
-            border-radius: 50%;
-            animation: pulse 1s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.3; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1.2); }
+            margin: 1px 0 0;
+            font-weight: 400;
         }
 
         .header-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
+            position: absolute;
+            right: 16px;
+        }
+
+        .header-actions:first-child {
+            left: 16px;
+            right: auto;
         }
 
         .icon-btn {
-            background: var(--surface-inner);
-            border: 1px solid var(--border-glass);
-            color: var(--text-muted);
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.2s;
         }
 
         .icon-btn:hover {
-            background: var(--surface-hover);
-            color: var(--text-main);
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
+            opacity: 0.7;
         }
 
-        /* Selector de Nivel */
+        /* Selector de Nivel (iMessage Segmented Control) */
         .levels-container {
             padding: 8px 16px;
-            background: rgba(15, 23, 42, 0.4);
-            border-bottom: 1px solid var(--border-glass);
+            background: rgba(0, 0, 0, 0.85);
+            border-bottom: 0.5px solid #2c2c2e;
         }
 
         .levels-bar {
-            background: rgba(0, 0, 0, 0.25);
-            padding: 3px;
-            border-radius: 12px;
+            background: #1c1c1e;
+            padding: 2px;
+            border-radius: 9px;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 4px;
-            border: 1px solid var(--border-glass);
+            gap: 2px;
         }
 
         .level-btn {
             background: transparent;
             color: var(--text-muted);
             border: none;
-            padding: 6px 0;
-            font-size: 0.72rem;
+            padding: 5px 0;
+            font-size: 0.7rem;
             font-weight: 600;
-            letter-spacing: 0.02em;
-            border-radius: 9px;
+            border-radius: 7px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .level-btn.active {
-            background: var(--primary-gradient);
+            background: #636366;
             color: #ffffff;
-            box-shadow: 0 2px 8px var(--accent-glow);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
-        /* Mensajes */
+        /* Mensajes (iMessage Bubbles Style) */
         .chat-messages {
             flex: 1;
-            padding: 18px 16px;
+            padding: 16px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
             scroll-behavior: smooth;
+            background-color: var(--bg-body);
         }
 
         .chat-messages::-webkit-scrollbar {
-            width: 5px;
-        }
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            width: 0px; /* Hide scrollbar like iOS */
         }
 
         .message {
-            max-width: 82%;
-            padding: 12px 15px;
+            max-width: 78%;
+            padding: 10px 14px;
             border-radius: 18px;
-            font-size: 0.92rem;
-            line-height: 1.45;
+            font-size: 0.93rem;
+            line-height: 1.4;
             position: relative;
-            animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeIn 0.2s ease;
             word-break: break-word;
+            letter-spacing: -0.01em;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(8px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .message.me {
@@ -280,7 +257,6 @@
             color: #ffffff;
             align-self: flex-end;
             border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
         }
 
         .message.ai {
@@ -288,59 +264,49 @@
             color: var(--text-main);
             align-self: flex-start;
             border-bottom-left-radius: 4px;
-            border: 1px solid var(--border-glass);
-            backdrop-filter: blur(8px);
         }
 
         .msg-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 0.5px solid rgba(255, 255, 255, 0.1);
         }
 
         .action-chip {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-glass);
-            color: var(--text-muted);
-            font-size: 0.72rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.7rem;
             font-weight: 500;
-            padding: 4px 9px;
-            border-radius: 8px;
+            padding: 3px 8px;
+            border-radius: 10px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            transition: all 0.15s ease;
+            gap: 4px;
+            transition: background 0.15s;
         }
 
         .action-chip:hover {
-            background: rgba(255, 255, 255, 0.12);
-            color: var(--text-main);
-            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .message.me .action-chip {
             background: rgba(0, 0, 0, 0.15);
-            border-color: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.85);
-        }
-
-        .message.me .action-chip:hover {
-            background: rgba(0, 0, 0, 0.25);
-            color: #fff;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .translation-box {
-            margin-top: 8px;
-            padding: 8px 10px;
-            background: rgba(16, 185, 129, 0.08);
+            margin-top: 6px;
+            padding: 6px 8px;
+            background: rgba(48, 209, 88, 0.12);
             border-left: 2px solid var(--success);
             border-radius: 4px 8px 8px 4px;
-            font-size: 0.82rem;
-            color: #a7f3d0;
+            font-size: 0.8rem;
+            color: #8ae9a8;
             display: none;
             line-height: 1.35;
             white-space: pre-line;
@@ -348,176 +314,165 @@
 
         .translation-box.show {
             display: block;
-            animation: fadeIn 0.2s ease;
         }
 
         .msg-footer {
             display: flex;
             justify-content: flex-end;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         .time-stamp {
-            font-size: 0.65rem;
-            color: rgba(255, 255, 255, 0.45);
-            font-weight: 500;
+            font-size: 0.6rem;
+            color: var(--text-muted);
         }
 
-        /* Input Bar */
+        /* Input Bar (iMessage Style Bottom Bar) */
         .chat-input-area {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(16px);
-            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             gap: 8px;
-            border-top: 1px solid var(--border-glass);
+            border-top: 0.5px solid #2c2c2e;
         }
 
         .input-wrapper {
             flex: 1;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-glass);
-            border-radius: 16px;
+            background: #1c1c1e;
+            border: 0.5px solid #38383a;
+            border-radius: 20px;
             padding: 2px 14px;
             display: flex;
             align-items: center;
-            transition: all 0.2s ease;
         }
 
         .input-wrapper:focus-within {
-            background: rgba(255, 255, 255, 0.07);
-            border-color: var(--border-glow);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
         }
 
         .chat-input {
             width: 100%;
             background: transparent;
             border: none;
-            padding: 10px 0;
+            padding: 8px 0;
             color: var(--text-main);
             font-size: 0.92rem;
             font-family: inherit;
         }
 
         .chat-input::placeholder {
-            color: var(--text-muted);
+            color: #636366;
         }
 
         .send-btn {
-            background: var(--primary-gradient);
+            background: var(--primary);
             color: #ffffff;
             border: none;
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.2s;
             flex-shrink: 0;
-            box-shadow: 0 4px 12px var(--accent-glow);
         }
 
         .send-btn:hover {
-            transform: scale(1.04);
-            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
-        }
-
-        .send-btn:active {
-            transform: scale(0.96);
+            opacity: 0.85;
         }
 
         /* Banner API */
         .api-banner {
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+            background: rgba(255, 159, 10, 0.15);
             color: var(--warning);
-            padding: 10px 16px;
-            font-size: 0.8rem;
+            padding: 8px 16px;
+            font-size: 0.78rem;
             font-weight: 500;
             display: none;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+            border-bottom: 0.5px solid rgba(255, 159, 10, 0.3);
             cursor: pointer;
         }
 
-        /* Settings Modal */
+        /* Settings Modal (iOS Action Sheet style) */
         .modal-overlay {
             position: absolute;
             inset: 0;
             background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: none;
             justify-content: center;
-            align-items: center;
+            align-items: flex-end;
             z-index: 100;
-            padding: 20px;
+            padding: 12px;
         }
 
         .modal-card {
-            background: rgba(24, 32, 47, 0.95);
+            background: #1c1c1e;
             width: 100%;
-            max-width: 320px;
-            padding: 24px;
-            border-radius: 20px;
-            border: 1px solid var(--border-glass);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            max-width: 460px;
+            padding: 20px;
+            border-radius: 24px;
+            border: 0.5px solid #38383a;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            animation: slideUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes modalPop {
-            from { opacity: 0; transform: scale(0.92); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes slideUpModal {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
 
         .modal-card h3 {
             margin: 0 0 16px;
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: 1.05rem;
+            font-weight: 600;
             text-align: center;
+            color: var(--text-main);
         }
 
         .modal-btn {
             width: 100%;
             padding: 12px;
             margin-bottom: 8px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: 600;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
+            border: none;
+            transition: opacity 0.2s;
             font-family: inherit;
         }
 
         .btn-update {
-            background: var(--primary-gradient);
+            background: var(--primary);
             color: #ffffff;
-            box-shadow: 0 4px 12px var(--accent-glow);
         }
 
         .btn-delete {
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(255, 69, 58, 0.15);
             color: var(--danger);
-            border-color: rgba(239, 68, 68, 0.2);
-        }
-        .btn-delete:hover {
-            background: rgba(239, 68, 68, 0.15);
         }
 
         .btn-close {
-            background: transparent;
-            color: var(--text-muted);
-        }
-        .btn-close:hover {
+            background: #2c2c2e;
             color: var(--text-main);
+            margin-top: 8px;
+        }
+
+        .modal-btn:hover {
+            opacity: 0.85;
         }
     </style>
 </head>
@@ -527,12 +482,14 @@
         
         <!-- Header -->
         <header class="chat-header">
+            <button class="icon-btn" style="position: static;" onclick="location.reload()" title="Reiniciar chat">
+                <i data-lucide="rotate-cw" style="width: 18px; height: 18px;"></i>
+            </button>
             <div class="friend-info">
                 <div class="avatar-wrap">
                     <div class="avatar">
                         <img src="perfil.png" alt="Emma" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face'">
                     </div>
-                    <div class="online-dot"></div>
                 </div>
                 <div class="friend-meta">
                     <h2>Emma 
@@ -540,15 +497,12 @@
                             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                         </svg>
                     </h2>
-                    <p class="friend-status" id="statusText">Active now</p>
+                    <p class="friend-status" id="statusText">iMessage</p>
                 </div>
             </div>
-            <div class="header-actions">
+            <div class="header-actions" style="position: static;">
                 <button class="icon-btn" onclick="toggleSettingsModal()" title="Configuración">
                     <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
-                </button>
-                <button class="icon-btn" onclick="location.reload()" title="Reiniciar chat">
-                    <i data-lucide="rotate-cw" style="width: 18px; height: 18px;"></i>
                 </button>
             </div>
         </header>
@@ -557,7 +511,7 @@
         <div id="apiBanner" class="api-banner" onclick="solicitarApiKey()">
             <span style="display: flex; align-items: center; gap: 6px;">
                 <i data-lucide="key-round" style="width: 14px; height: 14px;"></i>
-                Groq API Key required to start practicing
+                Groq API Key required
             </span>
             <span style="text-decoration: underline;">Configure</span>
         </div>
@@ -578,10 +532,10 @@
                 <div class="translation-box">¡Hola! Soy Emma. ¿Listo para practicar inglés juntos? No te preocupes por cometer errores, ¡estoy aquí para ayudarte! 😊</div>
                 <div class="msg-actions">
                     <button class="action-chip" onclick="reproducirAudio('Hey there! I\'m Emma. Ready to practice English together? Don\'t worry about making mistakes, I\'m here to help you out!')">
-                        <i data-lucide="volume-2" style="width: 13px; height: 13px;"></i> Listen
+                        <i data-lucide="volume-2" style="width: 12px; height: 12px;"></i> Listen
                     </button>
                     <button class="action-chip" onclick="toggleTranslation(this)">
-                        <i data-lucide="languages" style="width: 13px; height: 13px;"></i> Translate
+                        <i data-lucide="languages" style="width: 12px; height: 12px;"></i> Translate
                     </button>
                 </div>
                 <div class="msg-footer">
@@ -593,10 +547,10 @@
         <!-- Input Area -->
         <footer class="chat-input-area">
             <div class="input-wrapper">
-                <input type="text" id="userInput" class="chat-input" placeholder="Type in English..." onkeydown="checkSend(event)" autocomplete="off">
+                <input type="text" id="userInput" class="chat-input" placeholder="iMessage" onkeydown="checkSend(event)" autocomplete="off">
             </div>
             <button class="send-btn" onclick="enviarMensaje()" title="Send">
-                <i data-lucide="send" style="width: 18px; height: 18px; margin-left: 2px;"></i>
+                <i data-lucide="arrow-up" style="width: 18px; height: 18px; stroke-width: 3px;"></i>
             </button>
         </footer>
 
@@ -681,8 +635,8 @@
             transBox.classList.toggle('show');
             const isShowing = transBox.classList.contains('show');
             btn.innerHTML = isShowing 
-                ? `<i data-lucide="eye-off" style="width: 13px; height: 13px;"></i> Hide` 
-                : `<i data-lucide="languages" style="width: 13px; height: 13px;"></i> Translate`;
+                ? `<i data-lucide="eye-off" style="width: 12px; height: 12px;"></i> Hide` 
+                : `<i data-lucide="languages" style="width: 12px; height: 12px;"></i> Translate`;
             renderIcons();
         }
 
@@ -706,7 +660,6 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // Petición con fallback automático en Groq
         async function fetchWithGroqFallback(apiKey, bodyPayload) {
             const modelsToTry = [
                 'llama-3.3-70b-versatile',
@@ -762,7 +715,7 @@
                 <div class="msg-text">${escapedUserText}</div>
                 <div class="msg-actions">
                     <button class="action-chip" onclick="reproducirAudio('${escapedUserText.replace(/'/g, "\\'")}')">
-                        <i data-lucide="volume-2" style="width: 13px; height: 13px;"></i> Listen
+                        <i data-lucide="volume-2" style="width: 12px; height: 12px;"></i> Listen
                     </button>
                 </div>
                 <div class="msg-footer">
@@ -776,7 +729,7 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             const statusEl = document.getElementById('statusText');
-            statusEl.innerHTML = `<span class="typing-dot"></span> Emma is typing...`;
+            statusEl.innerText = 'typing...';
 
             chatHistory.push({ role: "user", content: texto });
 
@@ -820,10 +773,10 @@ You MUST reply strictly in valid JSON format:
                         <div class="translation-box">${escapedTransText}</div>
                         <div class="msg-actions">
                             <button class="action-chip" onclick="reproducirAudio('${escapedAiText.replace(/'/g, "\\'")}')">
-                                <i data-lucide="volume-2" style="width: 13px; height: 13px;"></i> Listen
+                                <i data-lucide="volume-2" style="width: 12px; height: 12px;"></i> Listen
                             </button>
                             <button class="action-chip" onclick="toggleTranslation(this)">
-                                <i data-lucide="languages" style="width: 13px; height: 13px;"></i> Translate
+                                <i data-lucide="languages" style="width: 12px; height: 12px;"></i> Translate
                             </button>
                         </div>
                         <div class="msg-footer">
@@ -840,11 +793,11 @@ You MUST reply strictly in valid JSON format:
                 console.error(error);
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'message ai';
-                errorDiv.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+                errorDiv.style.borderColor = 'rgba(255, 69, 58, 0.4)';
                 errorDiv.innerHTML = `<span style="color: var(--danger)">⚠️ Error:</span> ${escapeHtml(error.message)}`;
                 chatContainer.appendChild(errorDiv);
             } finally {
-                statusEl.innerText = 'Active now';
+                statusEl.innerText = 'iMessage';
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
         }
