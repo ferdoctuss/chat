@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Emma • English Practice</title>
+    <title>Hannah • English Practice</title>
     
     <link rel="icon" type="image/png" href="iconoweb.png">
     <link rel="apple-touch-icon" href="iconoweb.png">
@@ -32,7 +32,7 @@
             --text-muted: #8e8e93;
             --border-glass: #38383a;
             
-            --header-bg: rgba(0, 0, 0, 0.85);
+            --header-bg: rgba(0, 0, 0, 0.9);
             --header-border: #2c2c2e;
             --input-wrapper-bg: #1c1c1e;
             --input-border: #38383a;
@@ -64,7 +64,7 @@
             --text-muted: #8e8e93;
             --border-glass: #c6c6c8;
             
-            --header-bg: rgba(255, 255, 255, 0.85);
+            --header-bg: rgba(255, 255, 255, 0.9);
             --header-border: #c6c6c8;
             --input-wrapper-bg: #ffffff;
             --input-border: #c6c6c8;
@@ -105,7 +105,6 @@
             max-width: 480px;
             height: 100vh;
             height: 100dvh;
-            max-height: 900px;
             background: var(--surface-card);
             display: flex;
             flex-direction: column;
@@ -118,22 +117,24 @@
         @media (min-width: 520px) {
             .app-container {
                 height: 92vh;
+                max-height: 900px;
                 border-radius: 40px;
                 border: 10px solid var(--border-glass);
             }
         }
 
-        /* Header (iOS Navigation Bar Style) */
+        /* Header (iOS Navigation Bar Style - Fixed) */
         .chat-header {
             background: var(--header-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            padding: 12px 16px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 0.5px solid var(--header-border);
             z-index: 20;
+            flex-shrink: 0;
             transition: background 0.3s ease, border-color 0.3s ease;
         }
 
@@ -147,9 +148,9 @@
 
         .avatar-wrap {
             position: relative;
-            width: 40px;
-            height: 40px;
-            margin-bottom: 4px;
+            width: 36px;
+            height: 36px;
+            margin-bottom: 2px;
         }
 
         .avatar {
@@ -170,7 +171,7 @@
         }
 
         .friend-meta h2 {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
             margin: 0;
             letter-spacing: -0.01em;
@@ -184,20 +185,20 @@
         .badge-verified {
             display: inline-flex;
             color: var(--primary);
-            width: 12px;
-            height: 12px;
+            width: 11px;
+            height: 11px;
         }
 
         .friend-status {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
-            margin: 1px 0 0;
+            margin: 0;
             font-weight: 400;
         }
 
         .header-actions {
             display: flex;
-            gap: 8px;
+            gap: 4px;
         }
 
         .icon-btn {
@@ -218,18 +219,20 @@
             opacity: 0.7;
         }
 
-        /* Selector de Nivel */
+        /* Selector de Nivel (Fixed) */
         .levels-container {
-            padding: 8px 16px;
+            padding: 6px 16px;
             background: var(--header-bg);
             border-bottom: 0.5px solid var(--header-border);
+            flex-shrink: 0;
+            z-index: 10;
             transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .levels-bar {
             background: var(--levels-bar-bg);
             padding: 2px;
-            border-radius: 9px;
+            border-radius: 8px;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 2px;
@@ -240,10 +243,10 @@
             background: transparent;
             color: var(--text-muted);
             border: none;
-            padding: 5px 0;
-            font-size: 0.7rem;
+            padding: 4px 0;
+            font-size: 0.68rem;
             font-weight: 600;
-            border-radius: 7px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -254,11 +257,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        :root[data-theme="light"] .level-btn.active {
-            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-        }
-
-        /* Mensajes */
+        /* Mensajes (Scrollable Area) */
         .chat-messages {
             flex: 1;
             padding: 16px;
@@ -269,6 +268,7 @@
             scroll-behavior: smooth;
             background-color: var(--bg-body);
             transition: background-color 0.3s ease;
+            -webkit-overflow-scrolling: touch;
         }
 
         .chat-messages::-webkit-scrollbar {
@@ -367,7 +367,7 @@
             color: var(--text-muted);
         }
 
-        /* Input Bar */
+        /* Input Bar (Fixed at bottom) */
         .chat-input-area {
             background: var(--header-bg);
             backdrop-filter: blur(20px);
@@ -377,6 +377,7 @@
             align-items: center;
             gap: 8px;
             border-top: 0.5px solid var(--header-border);
+            flex-shrink: 0;
             transition: background 0.3s ease, border-color 0.3s ease;
         }
 
@@ -440,6 +441,7 @@
             justify-content: space-between;
             border-bottom: 0.5px solid rgba(255, 159, 10, 0.3);
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         /* Settings Modal */
@@ -537,11 +539,11 @@
             <div class="friend-info">
                 <div class="avatar-wrap">
                     <div class="avatar">
-                        <img src="perfil.png" alt="Emma" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face'">
+                        <img src="perfil.png" alt="Hannah" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face'">
                     </div>
                 </div>
                 <div class="friend-meta">
-                    <h2>Emma 
+                    <h2>Hannah 
                         <svg class="badge-verified" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                         </svg>
@@ -577,10 +579,10 @@
         <!-- Chat Area -->
         <main class="chat-messages" id="chatMessages">
             <div class="message ai">
-                <div class="msg-text">Hey there! I'm Emma. Ready to practice English together? Don't worry about making mistakes, I'm here to help you out! 😊</div>
-                <div class="translation-box">¡Hola! Soy Emma. ¿Listo para practicar inglés juntos? No te preocupes por cometer errores, ¡estoy aquí para ayudarte! 😊</div>
+                <div class="msg-text">Hey there! I'm Hannah. Ready to practice English together? Don't worry about making mistakes, I'm here to help you out! 😊</div>
+                <div class="translation-box">¡Hola! Soy Hannah. ¿Listo para practicar inglés juntos? No te preocupes por cometer errores, ¡estoy aquí para ayudarte! 😊</div>
                 <div class="msg-actions">
-                    <button class="action-chip" onclick="reproducirAudio('Hey there! I\'m Emma. Ready to practice English together? Don\'t worry about making mistakes, I\'m here to help you out!')">
+                    <button class="action-chip" onclick="reproducirAudio('Hey there! I\'m Hannah. Ready to practice English together? Don\'t worry about making mistakes, I\'m here to help you out!')">
                         <i data-lucide="volume-2" style="width: 12px; height: 12px;"></i> Listen
                     </button>
                     <button class="action-chip" onclick="toggleTranslation(this)">
@@ -638,7 +640,7 @@
 
         // Lógica de Modo Claro / Oscuro
         function inicializarTema() {
-            const savedTheme = localStorage.getItem('emma_theme') || 'dark';
+            const savedTheme = localStorage.getItem('hannah_theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
             actualizarBotonTema(savedTheme);
         }
@@ -647,7 +649,7 @@
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('emma_theme', newTheme);
+            localStorage.setItem('hannah_theme', newTheme);
             actualizarBotonTema(newTheme);
             renderIcons();
         }
@@ -817,16 +819,20 @@
 
             chatHistory.push({ role: "user", content: texto });
 
-            const systemInstruction = `You are Emma, a friendly native English speaker and supportive language partner. The user's English level is ${nivelActual}.
-Chat naturally like a friend on WhatsApp. Keep your responses short, natural, warm, and engaging.
-CRITICAL RULE: You must ONLY reply in English in the "reply" field.
-If the user makes a grammar, spelling, or phrasing mistake, you must gently correct them inside your response or explain it clearly.
-In the "translation" field, provide the Spanish translation of your English reply, AND if there were errors, include a clear explanation in Spanish mentioning the exact English terms (such as articles like "the", contractions like "I'm", prepositions, etc.) just like a professional bilingual tutor. Format the explanation cleanly with line breaks.
+            const systemInstruction = `You are Hannah, a friendly native English speaker and supportive language partner. The user's English level is ${nivelActual}.
+Chat naturally like a friend on WhatsApp/iMessage. Keep your responses short, natural, warm, and engaging.
+
+CRITICAL RULE FOR LANGUAGE:
+- You ONLY speak and reply in English.
+- If the user writes to you in Spanish (or any language other than English), you must act like a native English speaker who doesn't understand Spanish. Politely and naturally remind them in English that you only speak English and encourage them to try saying it in English (e.g., "Hey! I only speak English, let's practice together! How would you say that in English?"). Never reply back in Spanish.
+
+If the user makes a grammar, spelling, or phrasing mistake in English, you must gently correct them inside your response or explain it clearly.
+In the "translation" field, provide the Spanish translation of your English reply, AND if there were errors or if they spoke Spanish, include a clear explanation in Spanish mentioning the exact English terms just like a professional bilingual tutor. Format the explanation cleanly with line breaks.
 
 You MUST reply strictly in valid JSON format:
 {
-  "reply": "Your conversational English response including gentle corrections if needed",
-  "translation": "Traducción al español de tu respuesta.\\n\\n(Explicación detallada de la corrección en español usando los términos en inglés)."
+  "reply": "Your conversational English response including gentle corrections or reminding them to speak English if they used Spanish",
+  "translation": "Traducción al español de tu respuesta.\\n\\n(Explicación detallada o recordatorio en español)."
 }`;
 
             try {
