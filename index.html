@@ -32,7 +32,7 @@
             --text-muted: #8e8e93;
             --border-glass: #38383a;
             
-            --header-bg: rgba(0, 0, 0, 0.95);
+            --header-bg: rgba(0, 0, 0, 0.92);
             --header-border: #2c2c2e;
             --input-wrapper-bg: #1c1c1e;
             --input-border: #38383a;
@@ -64,7 +64,7 @@
             --text-muted: #8e8e93;
             --border-glass: #c6c6c8;
             
-            --header-bg: rgba(255, 255, 255, 0.95);
+            --header-bg: rgba(255, 255, 255, 0.92);
             --header-border: #c6c6c8;
             --input-wrapper-bg: #ffffff;
             --input-border: #c6c6c8;
@@ -89,58 +89,51 @@
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
+            height: 100vh;
+            height: 100dvh;
             background-color: var(--bg-body);
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
             overflow: hidden;
-            position: fixed;
         }
 
         .app-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
             width: 100%;
             max-width: 480px;
+            height: 100vh;
+            height: 100dvh;
             margin: 0 auto;
             background: var(--surface-card);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
             transition: background-color 0.3s ease;
         }
 
         @media (min-width: 520px) {
             .app-container {
-                top: 4vh;
-                bottom: 4vh;
                 height: 92vh;
                 max-height: 900px;
+                margin-top: 4vh;
                 border-radius: 40px;
                 border: 10px solid var(--border-glass);
                 box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
             }
         }
 
-        /* Header (Estrictamente fijo arriba) */
+        /* Header (Con mejor espacio vertical y centrado holgado) */
         .chat-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 52px;
             background: var(--header-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            padding: 6px 16px;
+            padding: 12px 16px 8px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 0.5px solid var(--header-border);
             z-index: 30;
+            flex-shrink: 0;
         }
 
         .friend-info {
@@ -153,9 +146,9 @@
 
         .avatar-wrap {
             position: relative;
-            width: 28px;
-            height: 28px;
-            margin-bottom: 1px;
+            width: 36px;
+            height: 36px;
+            margin-bottom: 3px;
         }
 
         .avatar {
@@ -176,43 +169,36 @@
         }
 
         .friend-meta h2 {
-            font-size: 0.78rem;
+            font-size: 0.88rem;
             font-weight: 600;
             margin: 0;
             letter-spacing: -0.01em;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 3px;
+            gap: 4px;
             color: var(--text-main);
-            line-height: 1;
+            line-height: 1.2;
         }
 
         .badge-verified {
             display: inline-flex;
             color: var(--primary);
-            width: 9px;
-            height: 9px;
-        }
-
-        .friend-status {
-            font-size: 0.55rem;
-            color: var(--text-muted);
-            margin: 0;
-            font-weight: 400;
+            width: 11px;
+            height: 11px;
         }
 
         .header-actions {
             display: flex;
-            gap: 2px;
+            gap: 4px;
         }
 
         .icon-btn {
             background: transparent;
             border: none;
             color: var(--primary);
-            width: 30px;
-            height: 30px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
@@ -225,36 +211,32 @@
             opacity: 0.7;
         }
 
-        /* Selector de Nivel (Justo debajo del header) */
+        /* Selector de Nivel */
         .levels-container {
-            position: absolute;
-            top: 52px;
-            left: 0;
-            right: 0;
-            height: 36px;
-            padding: 4px 16px;
+            padding: 8px 16px;
             background: var(--header-bg);
             border-bottom: 0.5px solid var(--header-border);
+            flex-shrink: 0;
             z-index: 25;
         }
 
         .levels-bar {
             background: var(--levels-bar-bg);
-            padding: 2px;
-            border-radius: 7px;
+            padding: 3px;
+            border-radius: 9px;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 2px;
+            gap: 3px;
         }
 
         .level-btn {
             background: transparent;
             color: var(--text-muted);
             border: none;
-            padding: 3px 0;
-            font-size: 0.65rem;
+            padding: 5px 0;
+            font-size: 0.7rem;
             font-weight: 600;
-            border-radius: 5px;
+            border-radius: 7px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -265,13 +247,10 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* Área de Mensajes (Con scroll interno y espacio exacto entre header y footer) */
+        /* Área de Mensajes (Flex natural para adaptarse fluido al teclado) */
         .chat-messages {
-            position: absolute;
-            top: 88px;
-            left: 0;
-            right: 0;
-            bottom: 56px;
+            flex: 1;
+            min-height: 0;
             padding: 16px;
             overflow-y: auto;
             display: flex;
@@ -378,21 +357,17 @@
             color: var(--text-muted);
         }
 
-        /* Barra de Entrada (Fija abajo) */
+        /* Barra de Entrada (Sube un poco más y queda fija abajo) */
         .chat-input-area {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 56px;
             background: var(--header-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            padding: 8px 16px;
+            padding: 10px 16px 14px 16px;
             display: flex;
             align-items: center;
             gap: 8px;
             border-top: 0.5px solid var(--header-border);
+            flex-shrink: 0;
             z-index: 30;
         }
 
@@ -401,7 +376,7 @@
             background: var(--input-wrapper-bg);
             border: 0.5px solid var(--input-border);
             border-radius: 20px;
-            padding: 2px 14px;
+            padding: 3px 14px;
             display: flex;
             align-items: center;
         }
@@ -414,7 +389,7 @@
             width: 100%;
             background: transparent;
             border: none;
-            padding: 6px 0;
+            padding: 8px 0;
             color: var(--text-main);
             font-size: 0.92rem;
             font-family: inherit;
@@ -428,8 +403,8 @@
             background: var(--primary);
             color: #ffffff;
             border: none;
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -445,21 +420,17 @@
 
         /* Banner API */
         .api-banner {
-            position: absolute;
-            top: 88px;
-            left: 0;
-            right: 0;
             background: rgba(255, 159, 10, 0.15);
             color: var(--warning);
-            padding: 6px 16px;
-            font-size: 0.75rem;
+            padding: 8px 16px;
+            font-size: 0.78rem;
             font-weight: 500;
             display: none;
             align-items: center;
             justify-content: space-between;
             border-bottom: 0.5px solid rgba(255, 159, 10, 0.3);
             cursor: pointer;
-            z-index: 28;
+            flex-shrink: 0;
         }
 
         /* Settings Modal */
@@ -551,7 +522,7 @@
         <!-- Header -->
         <header class="chat-header">
             <button class="icon-btn" onclick="location.reload()" title="Reiniciar chat">
-                <i data-lucide="rotate-cw" style="width: 16px; height: 16px;"></i>
+                <i data-lucide="rotate-cw" style="width: 18px; height: 18px;"></i>
             </button>
             <div class="friend-info">
                 <div class="avatar-wrap">
@@ -565,12 +536,11 @@
                             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                         </svg>
                     </h2>
-                    <p class="friend-status" id="statusText">iMessage</p>
                 </div>
             </div>
             <div class="header-actions">
                 <button class="icon-btn" onclick="toggleSettingsModal()" title="Configuración">
-                    <i data-lucide="settings" style="width: 16px; height: 16px;"></i>
+                    <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
                 </button>
             </div>
         </header>
@@ -587,7 +557,7 @@
         <!-- Banner API -->
         <div id="apiBanner" class="api-banner" onclick="solicitarApiKey()">
             <span style="display: flex; align-items: center; gap: 6px;">
-                <i data-lucide="key-round" style="width: 13px; height: 13px;"></i>
+                <i data-lucide="key-round" style="width: 14px; height: 14px;"></i>
                 Groq API Key required
             </span>
             <span style="text-decoration: underline;">Configure</span>
@@ -615,10 +585,10 @@
         <!-- Input Area -->
         <footer class="chat-input-area">
             <div class="input-wrapper">
-                <input type="text" id="userInput" class="chat-input" placeholder="iMessage" onkeydown="checkSend(event)" autocomplete="off">
+                <input type="text" id="userInput" class="chat-input" placeholder="Type a message..." onkeydown="checkSend(event)" autocomplete="off">
             </div>
             <button class="send-btn" onclick="enviarMensaje()" title="Send">
-                <i data-lucide="arrow-up" style="width: 16px; height: 16px; stroke-width: 3px;"></i>
+                <i data-lucide="arrow-up" style="width: 18px; height: 18px; stroke-width: 3px;"></i>
             </button>
         </footer>
 
@@ -653,15 +623,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             inicializarTema();
             renderIcons();
-            
-            // Ajuste automático para visualización al abrir teclado en móviles
-            if (window.visualViewport) {
-                window.visualViewport.addEventListener('resize', () => {
-                    const container = document.querySelector('.app-container');
-                    container.style.height = window.visualViewport.height + 'px';
-                    container.style.top = window.visualViewport.offsetTop + 'px';
-                });
-            }
         });
 
         function inicializarTema() {
@@ -839,9 +800,6 @@
             input.value = '';
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            const statusEl = document.getElementById('statusText');
-            statusEl.innerText = 'typing...';
-
             chatHistory.push({ role: "user", content: texto });
 
             const systemInstruction = `You are Hannah, a friendly native English speaker and supportive language partner. The user's English level is ${nivelActual}.
@@ -912,7 +870,6 @@ You MUST reply strictly in valid JSON format:
                 errorDiv.innerHTML = `<span style="color: var(--danger)">⚠️ Error:</span> ${escapeHtml(error.message)}`;
                 chatContainer.appendChild(errorDiv);
             } finally {
-                statusEl.innerText = 'iMessage';
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
         }
