@@ -32,7 +32,7 @@
             --text-muted: #8e8e93;
             --border-glass: #38383a;
             
-            --header-bg: rgba(0, 0, 0, 0.9);
+            --header-bg: rgba(0, 0, 0, 0.92);
             --header-border: #2c2c2e;
             --input-wrapper-bg: #1c1c1e;
             --input-border: #38383a;
@@ -64,7 +64,7 @@
             --text-muted: #8e8e93;
             --border-glass: #c6c6c8;
             
-            --header-bg: rgba(255, 255, 255, 0.9);
+            --header-bg: rgba(255, 255, 255, 0.92);
             --header-border: #c6c6c8;
             --input-wrapper-bg: #ffffff;
             --input-border: #c6c6c8;
@@ -94,9 +94,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            min-height: 100dvh;
+            height: 100vh;
+            height: 100dvh;
             overflow: hidden;
+            position: fixed;
+            width: 100%;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
@@ -109,7 +111,6 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             transition: background-color 0.3s ease;
         }
@@ -120,10 +121,11 @@
                 max-height: 900px;
                 border-radius: 40px;
                 border: 10px solid var(--border-glass);
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
             }
         }
 
-        /* Header (iOS Navigation Bar Style - Fixed) */
+        /* Header (Fijo, no se encoge) */
         .chat-header {
             background: var(--header-bg);
             backdrop-filter: blur(20px);
@@ -135,7 +137,7 @@
             border-bottom: 0.5px solid var(--header-border);
             z-index: 20;
             flex-shrink: 0;
-            transition: background 0.3s ease, border-color 0.3s ease;
+            height: 58px;
         }
 
         .friend-info {
@@ -148,8 +150,8 @@
 
         .avatar-wrap {
             position: relative;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             margin-bottom: 2px;
         }
 
@@ -171,7 +173,7 @@
         }
 
         .friend-meta h2 {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             margin: 0;
             letter-spacing: -0.01em;
@@ -180,17 +182,18 @@
             justify-content: center;
             gap: 4px;
             color: var(--text-main);
+            line-height: 1.1;
         }
 
         .badge-verified {
             display: inline-flex;
             color: var(--primary);
-            width: 11px;
-            height: 11px;
+            width: 10px;
+            height: 10px;
         }
 
         .friend-status {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--text-muted);
             margin: 0;
             font-weight: 400;
@@ -219,14 +222,13 @@
             opacity: 0.7;
         }
 
-        /* Selector de Nivel (Fixed) */
+        /* Selector de Nivel (Fijo, no se encoge) */
         .levels-container {
             padding: 6px 16px;
             background: var(--header-bg);
             border-bottom: 0.5px solid var(--header-border);
             flex-shrink: 0;
             z-index: 10;
-            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .levels-bar {
@@ -236,7 +238,6 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 2px;
-            transition: background 0.3s ease;
         }
 
         .level-btn {
@@ -257,9 +258,10 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* Mensajes (Scrollable Area) */
+        /* Área de Mensajes (Ocupa el espacio restante y hace scroll interno) */
         .chat-messages {
-            flex: 1;
+            flex: 1 1 auto;
+            min-height: 0;
             padding: 16px;
             overflow-y: auto;
             display: flex;
@@ -267,7 +269,6 @@
             gap: 12px;
             scroll-behavior: smooth;
             background-color: var(--bg-body);
-            transition: background-color 0.3s ease;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -367,7 +368,7 @@
             color: var(--text-muted);
         }
 
-        /* Input Bar (Fixed at bottom) */
+        /* Barra de Entrada (Fija abajo, no se encoge) */
         .chat-input-area {
             background: var(--header-bg);
             backdrop-filter: blur(20px);
@@ -378,7 +379,6 @@
             gap: 8px;
             border-top: 0.5px solid var(--header-border);
             flex-shrink: 0;
-            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .input-wrapper {
@@ -389,7 +389,6 @@
             padding: 2px 14px;
             display: flex;
             align-items: center;
-            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .input-wrapper:focus-within {
@@ -467,7 +466,6 @@
             border: 0.5px solid var(--modal-border);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             animation: slideUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         @keyframes slideUpModal {
@@ -638,7 +636,6 @@
             renderIcons();
         });
 
-        // Lógica de Modo Claro / Oscuro
         function inicializarTema() {
             const savedTheme = localStorage.getItem('hannah_theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
