@@ -654,7 +654,6 @@
             inicializarTema();
             renderIcons();
             
-            // Ajuste automático para visualización al abrir teclado en móviles
             if (window.visualViewport) {
                 window.visualViewport.addEventListener('resize', () => {
                     const container = document.querySelector('.app-container');
@@ -778,7 +777,7 @@
                 'llama-3.1-8b-instant'
             ];
 
-            let lastError = null;
+            let lastError = languageError = null;
 
             for (const model of modelsToTry) {
                 try {
@@ -844,8 +843,19 @@
 
             chatHistory.push({ role: "user", content: texto });
 
-            const systemInstruction = `You are Hannah, a friendly native English speaker and supportive language partner. The user's English level is ${nivelActual}.
-Chat naturally like a friend on WhatsApp/iMessage. Keep your responses short, natural, warm, and engaging.
+            // Definición de directrices estrictas basadas en la escala solicitada
+            let nivelInstruccion = "";
+            if (nivelActual === 'BASIC') {
+                nivelInstruccion = "LEVEL: BASIC (Complexity range 1 to 20). Use extremely simple vocabulary, basic present/past tenses, short sentences, very slow and easy conversational structures suitable for complete beginners.";
+            } else if (nivelActual === 'INTERMEDIATE') {
+                nivelInstruccion = "LEVEL: INTERMEDIATE (Complexity range 21 to 50). Use standard everyday vocabulary, common phrasal verbs, compound sentences, and moderate conversational flow.";
+            } else if (nivelActual === 'ADVANCED') {
+                nivelInstruccion = "LEVEL: ADVANCED (Complexity range 51 to 100). Use sophisticated vocabulary, idioms, complex grammatical structures, nuanced phrasing, and natural native-level speed/depth.";
+            }
+
+            const systemInstruction = `You are Hannah, a friendly native English speaker and supportive language partner. 
+${nivelInstruccion}
+Chat naturally like a friend on WhatsApp/iMessage adhering strictly to the complexity assigned above.
 
 CRITICAL RULE FOR LANGUAGE:
 - You ONLY speak and reply in English.
@@ -856,7 +866,7 @@ In the "translation" field, provide the Spanish translation of your English repl
 
 You MUST reply strictly in valid JSON format:
 {
-  "reply": "Your conversational English response including gentle corrections or reminding them to speak English if they used Spanish",
+  "reply": "Your conversational English response tailored strictly to the assigned level, including gentle corrections or reminding them to speak English if they used Spanish",
   "translation": "Traducción al español de tu respuesta.\\n\\n(Explicación detallada o recordatorio en español)."
 }`;
 
