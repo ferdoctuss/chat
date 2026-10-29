@@ -352,7 +352,7 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        /* Caja de traducción (Oculta hasta presionar Traducir) */
+        /* Caja de traducción */
         .translation-box {
             margin-top: 6px;
             padding: 6px 8px;
@@ -370,7 +370,7 @@
             display: block;
         }
 
-        /* Caja de consejos y correcciones (Visible siempre debajo de los botones, letra azul) */
+        /* Caja de consejos y correcciones (Letra azul) */
         .correction-box {
             margin-top: 8px;
             padding-top: 6px;
@@ -379,7 +379,7 @@
             color: var(--correction-blue);
             line-height: 1.35;
             white-space: pre-line;
-            display: none; /* Se muestra dinámicamente si hay contenido */
+            display: none;
         }
 
         .correction-box.show {
@@ -670,15 +670,21 @@
                 lucide.createIcons();
             }
         }
+
         document.addEventListener('DOMContentLoaded', () => {
             inicializarTema();
             renderIcons();
             
+            // Ajuste automático de contenedor y scroll al abrir/cerrar el teclado móvil
             if (window.visualViewport) {
                 window.visualViewport.addEventListener('resize', () => {
                     const container = document.querySelector('.app-container');
                     container.style.height = window.visualViewport.height + 'px';
                     container.style.top = window.visualViewport.offsetTop + 'px';
+                    
+                    // Forzar mantener la vista en los mensajes más recientes al abrir el teclado
+                    const chatContainer = document.getElementById('chatMessages');
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
                 });
             }
         });
