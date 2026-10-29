@@ -45,6 +45,7 @@
             --success: #30d158;
             --warning: #ff9f0a;
             --danger: #ff453a;
+            --correction-blue: #0a84ff;
         }
 
         /* iMessage Theme Variables (Light Mode) */
@@ -77,6 +78,7 @@
             --success: #34c759;
             --warning: #ff9500;
             --danger: #ff3b30;
+            --correction-blue: #007aff;
         }
 
         * {
@@ -125,7 +127,7 @@
             }
         }
 
-        /* Header (Estrictamente fijo arriba) */
+        /* Header */
         .chat-header {
             position: absolute;
             top: 0;
@@ -225,7 +227,7 @@
             opacity: 0.7;
         }
 
-        /* Selector de Nivel (Justo debajo del header) */
+        /* Selector de Nivel */
         .levels-container {
             position: absolute;
             top: 52px;
@@ -265,7 +267,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* Área de Mensajes (Con scroll interno y espacio exacto entre header y footer) */
+        /* Área de Mensajes */
         .chat-messages {
             position: absolute;
             top: 88px;
@@ -287,7 +289,7 @@
         }
 
         .message {
-            max-width: 78%;
+            max-width: 82%;
             padding: 10px 14px;
             border-radius: 18px;
             font-size: 0.92rem;
@@ -350,6 +352,7 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
+        /* Caja de traducción (Oculta hasta presionar Traducir) */
         .translation-box {
             margin-top: 6px;
             padding: 6px 8px;
@@ -367,6 +370,22 @@
             display: block;
         }
 
+        /* Caja de consejos y correcciones (Visible siempre debajo de los botones, letra azul) */
+        .correction-box {
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 0.5px solid rgba(128, 128, 128, 0.3);
+            font-size: 0.8rem;
+            color: var(--correction-blue);
+            line-height: 1.35;
+            white-space: pre-line;
+            display: none; /* Se muestra dinámicamente si hay contenido */
+        }
+
+        .correction-box.show {
+            display: block;
+        }
+
         .msg-footer {
             display: flex;
             justify-content: flex-end;
@@ -378,7 +397,7 @@
             color: var(--text-muted);
         }
 
-        /* Barra de Entrada (Fija abajo) */
+        /* Barra de Entrada */
         .chat-input-area {
             position: absolute;
             bottom: 0;
@@ -565,7 +584,7 @@
                             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                         </svg>
                     </h2>
-                    <p class="friend-status" id="statusText">iMessage</p>
+                    <p class="friend-status" id="statusText">Active now</p>
                 </div>
             </div>
             <div class="header-actions">
@@ -606,6 +625,7 @@
                         <i data-lucide="languages" style="width: 12px; height: 12px;"></i> Translate
                     </button>
                 </div>
+                <div class="correction-box"></div>
                 <div class="msg-footer">
                     <span class="time-stamp">Just now</span>
                 </div>
@@ -615,7 +635,7 @@
         <!-- Input Area -->
         <footer class="chat-input-area">
             <div class="input-wrapper">
-                <input type="text" id="userInput" class="chat-input" placeholder="iMessage" onkeydown="checkSend(event)" autocomplete="off">
+                <input type="text" id="userInput" class="chat-input" placeholder="Type a message..." onkeydown="checkSend(event)" autocomplete="off">
             </div>
             <button class="send-btn" onclick="enviarMensaje()" title="Send">
                 <i data-lucide="arrow-up" style="width: 16px; height: 16px; stroke-width: 3px;"></i>
@@ -777,7 +797,7 @@
                 'llama-3.1-8b-instant'
             ];
 
-            let lastError = languageError = null;
+            let lastError = null;
 
             for (const model of modelsToTry) {
                 try {
@@ -843,7 +863,6 @@
 
             chatHistory.push({ role: "user", content: texto });
 
-            // Definición de directrices estrictas basadas en la escala solicitada
             let nivelInstruccion = "";
             if (nivelActual === 'BASIC') {
                 nivelInstruccion = "LEVEL: BASIC (Complexity range 1 to 20). Use extremely simple vocabulary, basic present/past tenses, short sentences, very slow and easy conversational structures suitable for complete beginners.";
@@ -862,12 +881,14 @@ CRITICAL RULE FOR LANGUAGE:
 - If the user writes to you in Spanish (or any language other than English), you must act like a native English speaker who doesn't understand Spanish. Politely and naturally remind them in English that you only speak English and encourage them to try saying it in English (e.g., "Hey! I only speak English, let's practice together! How would you say that in English?"). Never reply back in Spanish.
 
 If the user makes a grammar, spelling, or phrasing mistake in English, you must gently correct them inside your response or explain it clearly.
-In the "translation" field, provide the Spanish translation of your English reply, AND if there were errors or if they spoke Spanish, include a clear explanation in Spanish mentioning the exact English terms just like a professional bilingual tutor. Format the explanation cleanly with line breaks.
+In the "translation" field, provide ONLY the Spanish translation of your English reply.
+In the "correction" field, provide ONLY the detailed explanation of grammar corrections, tips, or reminders in Spanish (if there were errors or if they spoke Spanish). If there are no corrections or tips needed, leave this field completely empty ("").
 
 You MUST reply strictly in valid JSON format:
 {
-  "reply": "Your conversational English response tailored strictly to the assigned level, including gentle corrections or reminding them to speak English if they used Spanish",
-  "translation": "Traducción al español de tu respuesta.\\n\\n(Explicación detallada o recordatorio en español)."
+  "reply": "Your conversational English response tailored strictly to the assigned level",
+  "translation": "Traducción exacta al español de tu respuesta en inglés.",
+  "correction": "Explicación detallada de correcciones, consejos o recordatorios en español (dejar vacío si no aplica)."
 }`;
 
             try {
@@ -891,7 +912,8 @@ You MUST reply strictly in valid JSON format:
                     const aiMsgDiv = document.createElement('div');
                     aiMsgDiv.className = 'message ai';
                     const escapedAiText = escapeHtml(aiResponse.reply);
-                    const escapedTransText = escapeHtml(aiResponse.translation);
+                    const escapedTransText = escapeHtml(aiResponse.translation || '');
+                    const escapedCorrectionText = escapeHtml(aiResponse.correction || '');
                     
                     aiMsgDiv.innerHTML = `
                         <div class="msg-text">${escapedAiText}</div>
@@ -904,6 +926,7 @@ You MUST reply strictly in valid JSON format:
                                 <i data-lucide="languages" style="width: 12px; height: 12px;"></i> Translate
                             </button>
                         </div>
+                        <div class="correction-box ${escapedCorrectionText ? 'show' : ''}">${escapedCorrectionText}</div>
                         <div class="msg-footer">
                             <span class="time-stamp">${getTimeString()}</span>
                         </div>
@@ -922,7 +945,7 @@ You MUST reply strictly in valid JSON format:
                 errorDiv.innerHTML = `<span style="color: var(--danger)">⚠️ Error:</span> ${escapeHtml(error.message)}`;
                 chatContainer.appendChild(errorDiv);
             } finally {
-                statusEl.innerText = 'iMessage';
+                statusEl.innerText = 'Active now';
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
         }
